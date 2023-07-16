@@ -2,7 +2,7 @@
 int led=13;
 
 int temp=0,i=0,x=0,k=0,sent=0,first=0;
-char str[100],msg[32];
+char str[256],msg[64];
 
 
 #include <MD_Parola.h>
@@ -16,9 +16,9 @@ char message[BUF_SIZE] = { "" };                                 //This is the v
 char startup[] = "Starting GSM Module";                         //This is variable used to initialise the starting message.
 //char 
 
-#define MAX_DEVICES 4                      //Max devices of dot matrix boards
+#define MAX_DEVICES 8                      //Max devices of dot matrix boards
 #define CLK_PIN 13                         // CLK or SCK
-#define DATA_PIN                           // DATA or MOSI
+#define DATA_PIN 11                          // DATA or MOSI
 #define CS_PIN 10                         // CS or SS
 
 MD_Parola myDisplay = MD_Parola(HARDWARE_TYPE, CS_PIN, MAX_DEVICES);    //setting hardware type
@@ -26,7 +26,7 @@ MD_Parola myDisplay = MD_Parola(HARDWARE_TYPE, CS_PIN, MAX_DEVICES);    //settin
 void setup() {
   Serial.begin(9600);   //serial monitor baud rate
   myDisplay.begin();            //initialising the display
-  myDisplay.setIntensity(1);                                          //This value can be change within (1-15)as it increases or decreases the brightness of the display
+  myDisplay.setIntensity(5);                                          //This value can be change within (1-15)as it increases or decreases the brightness of the display
   myDisplay.displayClear();                                            //This is used to clear the display
   myDisplay.displayScroll(message, PA_CENTER, PA_SCROLL_LEFT, 200);   //This is responsible to display the message
 
