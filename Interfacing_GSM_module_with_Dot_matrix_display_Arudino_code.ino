@@ -1,8 +1,8 @@
  
 int led=13;
-
+ 
 int temp=0,i=0,x=0,k=0,sent=0,first=0;
-char str[256],msg[64];
+char str[200],msg[64];
 
 
 #include <MD_Parola.h>
@@ -17,16 +17,19 @@ char startup[] = "Starting GSM Module";                         //This is variab
 //char 
 
 #define MAX_DEVICES 8                      //Max devices of dot matrix boards
-#define CLK_PIN 13                         // CLK or SCK
-#define DATA_PIN 11                          // DATA or MOSI
-#define CS_PIN 10                         // CS or SS
+
+#define DATA_PIN 5                          // DATA or MOSI
+#define CS_PIN 3                         // CS or SS
+#define CLK_PIN 2                         // CLK or SCK
+
+
 
 MD_Parola myDisplay = MD_Parola(HARDWARE_TYPE, CS_PIN, MAX_DEVICES);    //setting hardware type
 
 void setup() {
   Serial.begin(9600);   //serial monitor baud rate
   myDisplay.begin();            //initialising the display
-  myDisplay.setIntensity(5);                                          //This value can be change within (1-15)as it increases or decreases the brightness of the display
+  myDisplay.setIntensity(3);                                          //This value can be change within (1-15)as it increases or decreases the brightness of the display
   myDisplay.displayClear();                                            //This is used to clear the display
   myDisplay.displayScroll(message, PA_CENTER, PA_SCROLL_LEFT, 200);   //This is responsible to display the message
 
@@ -57,6 +60,8 @@ void loop() {
     {
       while(str[x]=='#')            //checks for #(hash) in the message if it is present its start storing the message
       {
+//        memset(msg, 0, sizeof msg);
+//        memset(str, 0, sizeof str);
         x++;
         while(str[x]!='*')          //checks for *(astrix) in the message if it is present it stops storing the message
         {
@@ -66,6 +71,9 @@ void loop() {
       x++;
     }
     msg[k]='\0';
+    Serial.println("str:");
+    Serial.println(str);
+    Serial.println("msg:");
     Serial.println(msg);      //print the received message in serial monitor
     matrix_display();         // Call the display function to show the message
     delay(1000);
@@ -90,14 +98,6 @@ void loop() {
 }
 
 void matrix_display() {                                                         //This is code for the dot matrix 
-    
-    if(first==0){     //This condition is to display startup message
-      
-      myDisplay.displayClear();     //before displaying something we need to clear something
-      String myString =String(startup);       //we concat starup message to a string
-      myString.toCharArray(message, sizeof(message));   //here string is converted to the char array 
-
-    }
 
      if(first==1){      //This condition is to display received messages from the gsm module
       
@@ -105,10 +105,7 @@ void matrix_display() {                                                         
         myDisplay.displayReset();
       }
       String myString = String(msg);                                         //In this msg char is converted to the string and concated to the mystring
-
-    if(myString.length() == 0){
-      String myString = "Try to Send a Message";
-     }
+     
     
     myString.toCharArray(message, sizeof(message));                        //This line is used to store the mystring variable to the message variable
    
@@ -128,6 +125,7 @@ void serialEvent()      //This funtion checks *(astrix) if it is present it decl
       temp=1;
       sent=1;
       first=1;
+
       Serial.println("Message Received");     //This message is printed in serial monitor
       delay(500);                             //waits for a half second
     }
